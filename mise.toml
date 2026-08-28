@@ -1,0 +1,9 @@
+[tools]
+node = "26"
+erlang = "29"
+
+[tasks.test]
+run = "node --test"
+
+[tasks.bench]
+run = "node --expose-gc bench/utf8.bench.ts"
