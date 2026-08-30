@@ -2,8 +2,15 @@
 node = "26"
 erlang = "29"
 
+[tasks.dev]
+run = "node src/main.mjs"
+
 [tasks.test]
 run = "node --test"
 
 [tasks.bench]
 run = "node --expose-gc bench/utf8.bench.ts"
+
+[tasks.gleam_app]
+dir = "gleam_app/"
+run = "gleam run"
