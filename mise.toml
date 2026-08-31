@@ -9,7 +9,7 @@ run = "node src/main.js"
 run = "node --test"
 
 [tasks.bench]
-run = 'for f in bench/*.bench.js; do node --expose-gc "$f" || exit 1; done'
+run = 'for f in bench/*.bench.js; do echo "$f"; node --expose-gc "$f" || exit 1; done'
 
 [tasks.gleam_app]
 dir = "gleam_app/"
