@@ -39,8 +39,6 @@ This is what Erlang does under the hood: https://github.com/erlang/otp/blob/15f5
 
 ## Testing
 
-[Zig](https://ziglang.org/) has a nice unicode test: https://github.com/ziglang/zig/blob/master/lib/std/unicode.zig
-
-There is quite a famous UTF-8 stress test by Markus Kuhn: https://www.unicode.org/mail-arch/unicode-ml/Archives-Old/UML019/0087.html.
+[Zig](https://ziglang.org/) has a nice and extensive unicode test for UTF-8 and UTF-16: https://github.com/ziglang/zig/blob/master/lib/std/unicode.zig that we ported over in [utf8.test.js](./test/utf8.test.js) and [utf16.test.js](./test/utf16.test.js)
 
 ## Performance
