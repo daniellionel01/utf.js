@@ -43,7 +43,7 @@ There are a few issues with this:
 
 The rules that define valid UTF-8 sequences are specified in RFC 3629: https://www.rfc-editor.org/rfc/rfc3629
 
-Erlang also validates UTF sequences directly in its bit syntax implementation: https://github.com/erlang/otp/blob/15f5565172ad3c5d55370cbf2385c49d7c219a6a/erts/emulator/beam/erl_bits.c#L21299
+Erlang also validates UTF sequences directly in its bit array syntax implementation: https://github.com/erlang/otp/blob/15f5565172ad3c5d55370cbf2385c49d7c219a6a/erts/emulator/beam/erl_bits.c#L21299
 
 In the [gleam_app](./gleam_app/) directory, I took the generated JavaScript from Gleam code that contains `case` statements which match on `<<_:utf8>>`. See [app.gleam](./gleam_app/src/app.gleam) for that code.
 
