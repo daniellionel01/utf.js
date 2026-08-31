@@ -5,8 +5,6 @@ import { sizedInt, stringBits, toBitArray } from "../src/gleam.js";
 import { bitArrayUtf8Size } from "../src/utf.js";
 
 /**
- * Asserts that the byte sequence is measured at its full size in bits.
- *
  * @param {number[]} bytes
  */
 function testValid(bytes) {
@@ -14,8 +12,6 @@ function testValid(bytes) {
 }
 
 /**
- * Asserts that the byte sequence is rejected.
- *
  * @param {number[]} bytes
  */
 function testError(bytes) {

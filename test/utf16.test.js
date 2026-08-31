@@ -5,9 +5,6 @@ import { stringToUtf16, toBitArray } from "../src/gleam.js";
 import { bitArrayUtf16Size } from "../src/utf.js";
 
 /**
- * Returns the byte representation of UTF-16 code units. Lone surrogates are
- * permitted because String.fromCodePoint accepts them.
- *
  * @param {number[]} codeUnits
  * @param {boolean} isBigEndian
  * @returns {Uint8Array}
@@ -17,8 +14,6 @@ function utf16Bytes(codeUnits, isBigEndian) {
 }
 
 /**
- * Asserts that the code units are measured at their full size in bits.
- *
  * @param {number[]} codeUnits
  * @param {boolean} [isBigEndian]
  */
@@ -29,8 +24,6 @@ function testValid(codeUnits, isBigEndian = false) {
 }
 
 /**
- * Asserts that the code units are rejected.
- *
  * @param {number[]} codeUnits
  * @param {boolean} [isBigEndian]
  */

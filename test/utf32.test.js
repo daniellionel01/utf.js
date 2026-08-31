@@ -5,8 +5,6 @@ import { codepointToUtf32, toBitArray, UtfCodepoint } from "../src/gleam.js";
 import { bitArrayUtf32Size } from "../src/utf.js";
 
 /**
- * Asserts that the code point is measured at its full size in bits.
- *
  * @param {number} codepoint
  * @param {boolean} [isBigEndian]
  */
@@ -17,11 +15,6 @@ function testValid(codepoint, isBigEndian = false) {
 }
 
 /**
- * Asserts that the code point is rejected.
- *
- * codepointToUtf32 cannot be used here because String.fromCodePoint throws
- * for code points above U+10FFFF, which is one of the invalid cases.
- *
  * @param {number} codepoint
  * @param {boolean} [isBigEndian]
  */
@@ -35,12 +28,8 @@ function testError(codepoint, isBigEndian = false) {
   assert.equal(bitArrayUtf32Size(toBitArray(bytes), 0, isBigEndian), -1);
 }
 
-// Tests ported from
-// https://github.com/ziglang/zig/blob/master/lib/std/unicode.zig
-//
-// Zig has no UTF-32 functions, so the code points below are taken from the
-// test "utf8 valid codepoint" (surrogates and code points above U+10FFFF are
-// invalid) and the UTF-16 boundary cases from test utf16LeToUtf8.
+// Zig has no UTF-32 functions, so the tests below test a few well known
+// edge cases for those sequences.
 
 describe("valid utf32", () => {
   test("code points", () => {
