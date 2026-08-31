@@ -2,7 +2,7 @@ import { toBitArray, stringBits, bitArraySliceToInt, sizedInt } from "./gleam.js
 import { bitArrayUtf8Size } from "./utf.js";
 
 /*
-All valid UTF-8 Characters:
+Valid UTF-8 Characters:
 
 1 byte	a	U+0061	61
 2 bytes	é	U+00E9	C3 A9

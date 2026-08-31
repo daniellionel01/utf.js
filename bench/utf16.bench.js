@@ -85,18 +85,4 @@ bench("scan 300 emoji code units", () => {
   do_not_optimize(scanUtf16(emojiBits, false));
 });
 
-// Usage: bench/utf16.bench.js [filter-regex] [--json]
-const args = process.argv.slice(2);
-const options = {};
-
-if (args.includes("--json")) {
-  options.format = "json";
-}
-
-const filter = args.find((arg) => !arg.startsWith("--"));
-
-if (filter) {
-  options.filter = new RegExp(filter);
-}
-
-await run(options);
+await run();
