@@ -2,8 +2,11 @@
 node = "26"
 erlang = "29"
 
-[tasks.dev]
-run = "node src/main.js"
+[tasks.before]
+run = "node src/before.js"
+
+[tasks.after]
+run = "node src/after.js"
 
 [tasks.test]
 run = "node --test"

@@ -46,3 +46,24 @@ It is also how Erlang implements its validation under the hood: https://github.c
 ## Testing
 
 [Zig](https://ziglang.org/) has a good unicode test suite for UTF-8 and UTF-16: https://github.com/ziglang/zig/blob/master/lib/std/unicode.zig that we ported over in [utf8.test.js](./test/utf8.test.js) and [utf16.test.js](./test/utf16.test.js)
+
+## Performance
+
+You can run `mise run bench` to see the performance of UTF-8, UTF-16 and UTF-32 validation for a bunch of valid and invalid inputs.
+
+At the moment I don't have a good baseline or comparison, so these numbers do not mean very much without that.
+
+## UTF Characters
+
+UTF-8 characters can be 1-4 bytes long. Here are some examples
+
+a U+0061: 1 byte
+é U+00E9: 2 bytes
+€ U+20AC: 3 bytes
+💜 U+1F49C: 4 bytes
+
+## Incorrect Gleam JavaScript
+
+With the [gleam_app](./gleam_app/) directory I generated the JavaScript for example `case` statements that match on `<<_:utf8>>`. Checkout [app.gleam](./gleam_app/src/app.gleam) for that code.
+
+I then took the generated JavaScript, simplified it and put it into [before.js](./src/before.js)
