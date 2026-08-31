@@ -3,13 +3,13 @@ node = "26"
 erlang = "29"
 
 [tasks.dev]
-run = "node src/main.mjs"
+run = "node src/main.js"
 
 [tasks.test]
 run = "node --test"
 
 [tasks.bench]
-run = "node --expose-gc bench/utf8.bench.ts"
+run = "node --expose-gc bench/utf8.bench.js"
 
 [tasks.gleam_app]
 dir = "gleam_app/"

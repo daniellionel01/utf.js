@@ -296,7 +296,7 @@ export const BitArray$BitArray$data = (bitArray) => {
  * @param {number} index
  * @returns {number}
  */
-function bitArrayByteAt(buffer, bitOffset, index) {
+export function bitArrayByteAt(buffer, bitOffset, index) {
   if (bitOffset === 0) {
     return buffer[index] ?? 0;
   } else {

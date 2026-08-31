@@ -1,4 +1,5 @@
-import { toBitArray, stringBits, bitArraySliceToInt } from "./gleam.mjs";
+import { toBitArray, stringBits, bitArraySliceToInt, sizedInt } from "./gleam.js";
+import { bitArrayUtf8SequenceSize } from "./utf8.js";
 
 /*
 All valid UTF-8 Characters:
@@ -154,5 +155,23 @@ function main() {
   } else {
     console.log("this is not.");
   }
+
+  let utf8Size;
+
+  $ = toBitArray([stringBits("a")]);
+  utf8Size = bitArrayUtf8SequenceSize($, 0);
+  console.log("$", "a", "bitSize", $.bitSize, "utf8Size", utf8Size);
+
+  $ = toBitArray([stringBits("é")]);
+  utf8Size = bitArrayUtf8SequenceSize($, 0);
+  console.log("$", "é", "bitSize", $.bitSize, "utf8Size", utf8Size);
+
+  $ = toBitArray([stringBits("€")]);
+  utf8Size = bitArrayUtf8SequenceSize($, 0);
+  console.log("$", "€", "bitSize", $.bitSize, "utf8Size", utf8Size);
+
+  $ = toBitArray([stringBits("💜")]);
+  utf8Size = bitArrayUtf8SequenceSize($, 0);
+  console.log("$", "💜", "bitSize", $.bitSize, "utf8Size", utf8Size);
 }
 main();
