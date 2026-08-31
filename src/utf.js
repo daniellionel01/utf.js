@@ -8,7 +8,7 @@ import { BitArray, bitArraySlice } from "./gleam.js";
  * @param {number} start
  * @returns {number}
  */
-export function bitArrayUtf8Size(bitArray, start) {
+export function bitArrayUtf8SequenceSize(bitArray, start) {
   if (start < 0 || start + 8 > bitArray.bitSize) {
     return -1;
   }
@@ -71,7 +71,7 @@ export function bitArrayUtf8Size(bitArray, start) {
  * @param {boolean} isBigEndian
  * @returns {number}
  */
-export function bitArrayUtf16Size(bitArray, start, isBigEndian) {
+export function bitArrayUtf16SequenceSize(bitArray, start, isBigEndian) {
   if (start < 0 || start + 16 > bitArray.bitSize) {
     return -1;
   }
@@ -119,7 +119,7 @@ export function bitArrayUtf16Size(bitArray, start, isBigEndian) {
  * @param {boolean} isBigEndian
  * @returns {number}
  */
-export function bitArrayUtf32Size(bitArray, start, isBigEndian) {
+export function bitArrayUtf32SequenceSize(bitArray, start, isBigEndian) {
   if (start < 0 || start + 32 > bitArray.bitSize) {
     return -1;
   }

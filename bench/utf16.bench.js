@@ -1,7 +1,7 @@
 import { bench, do_not_optimize, run } from "mitata";
 
 import { sizedInt, stringToUtf16, toBitArray } from "../src/gleam.js";
-import { bitArrayUtf16Size } from "../src/utf.js";
+import { bitArrayUtf16SequenceSize } from "../src/utf.js";
 
 const ascii = toBitArray(stringToUtf16("a", false));
 const bmpBoundary = toBitArray(stringToUtf16("\u{ffff}", false));
@@ -21,7 +21,7 @@ function scanUtf16(bitArray, isBigEndian) {
   let offset = 0;
 
   while (offset < bitArray.bitSize) {
-    const size = bitArrayUtf16Size(bitArray, offset, isBigEndian);
+    const size = bitArrayUtf16SequenceSize(bitArray, offset, isBigEndian);
     if (size < 0) {
       break;
     }
@@ -38,39 +38,39 @@ const asciiBits = toBitArray(stringToUtf16("abcdefghij".repeat(100), false));
 const emojiBits = toBitArray(stringToUtf16("👋💩🇺🇳".repeat(50), false));
 
 bench("1 code unit", () => {
-  do_not_optimize(bitArrayUtf16Size(ascii, 0, false));
+  do_not_optimize(bitArrayUtf16SequenceSize(ascii, 0, false));
 });
 
 bench("1 code unit big endian", () => {
-  do_not_optimize(bitArrayUtf16Size(asciiBE, 0, true));
+  do_not_optimize(bitArrayUtf16SequenceSize(asciiBE, 0, true));
 });
 
 bench("U+FFFF", () => {
-  do_not_optimize(bitArrayUtf16Size(bmpBoundary, 0, false));
+  do_not_optimize(bitArrayUtf16SequenceSize(bmpBoundary, 0, false));
 });
 
 bench("surrogate pair", () => {
-  do_not_optimize(bitArrayUtf16Size(surrogatePair, 0, false));
+  do_not_optimize(bitArrayUtf16SequenceSize(surrogatePair, 0, false));
 });
 
 bench("surrogate pair big endian", () => {
-  do_not_optimize(bitArrayUtf16Size(surrogatePairBE, 0, true));
+  do_not_optimize(bitArrayUtf16SequenceSize(surrogatePairBE, 0, true));
 });
 
 bench("unaligned surrogate pair", () => {
-  do_not_optimize(bitArrayUtf16Size(unaligned, 3, false));
+  do_not_optimize(bitArrayUtf16SequenceSize(unaligned, 3, false));
 });
 
 bench("invalid low surrogate", () => {
-  do_not_optimize(bitArrayUtf16Size(invalidLowSurrogate, 0, false));
+  do_not_optimize(bitArrayUtf16SequenceSize(invalidLowSurrogate, 0, false));
 });
 
 bench("invalid dangling high surrogate", () => {
-  do_not_optimize(bitArrayUtf16Size(invalidDanglingHigh, 0, false));
+  do_not_optimize(bitArrayUtf16SequenceSize(invalidDanglingHigh, 0, false));
 });
 
 bench("invalid high high", () => {
-  do_not_optimize(bitArrayUtf16Size(invalidHighHigh, 0, false));
+  do_not_optimize(bitArrayUtf16SequenceSize(invalidHighHigh, 0, false));
 });
 
 bench("scan 1000 ascii code units", () => {

@@ -48,7 +48,7 @@ In the [gleam_app](./gleam_app/) directory I took the generated JavaScript from 
 
 That JavaScript was simplified and can be found in [before.js](./src/before.js).
 
-To check a bit array for valid UTF sequences, you can use `bitArrayUtf8Size`, `bitArrayUtf16Size` or `bitArrayUtf32Size` from [utf.js](./src/utf.js).
+To check a bit array for valid UTF sequences, you can use `bitArrayUtf8SequenceSize`, `bitArrayUtf16SequenceSize` or `bitArrayUtf32SequenceSize` from [utf.js](./src/utf.js).
 
 The same examples from `before.js` were ported to use those functions in [after.js](./src/after.js).
 

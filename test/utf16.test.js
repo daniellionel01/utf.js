@@ -2,7 +2,7 @@ import { strict as assert } from "node:assert";
 import { describe, test } from "node:test";
 
 import { stringToUtf16, toBitArray } from "../src/gleam.js";
-import { bitArrayUtf16Size } from "../src/utf.js";
+import { bitArrayUtf16SequenceSize } from "../src/utf.js";
 
 /**
  * @param {number[]} codeUnits
@@ -20,7 +20,7 @@ function utf16Bytes(codeUnits, isBigEndian) {
 function testValid(codeUnits, isBigEndian = false) {
   const bytes = utf16Bytes(codeUnits, isBigEndian);
 
-  assert.equal(bitArrayUtf16Size(toBitArray(bytes), 0, isBigEndian), codeUnits.length * 16);
+  assert.equal(bitArrayUtf16SequenceSize(toBitArray(bytes), 0, isBigEndian), codeUnits.length * 16);
 }
 
 /**
@@ -30,7 +30,7 @@ function testValid(codeUnits, isBigEndian = false) {
 function testError(codeUnits, isBigEndian = false) {
   const bytes = utf16Bytes(codeUnits, isBigEndian);
 
-  assert.equal(bitArrayUtf16Size(toBitArray(bytes), 0, isBigEndian), -1);
+  assert.equal(bitArrayUtf16SequenceSize(toBitArray(bytes), 0, isBigEndian), -1);
 }
 
 // Tests ported from
@@ -54,8 +54,8 @@ describe("valid utf16", () => {
   test("only measures the sequence at the given position", () => {
     const bitArray = toBitArray(utf16Bytes([0x61, 0xd83d, 0xdca9], false));
 
-    assert.equal(bitArrayUtf16Size(bitArray, 0, false), 16);
-    assert.equal(bitArrayUtf16Size(bitArray, 16, false), 32);
+    assert.equal(bitArrayUtf16SequenceSize(bitArray, 0, false), 16);
+    assert.equal(bitArrayUtf16SequenceSize(bitArray, 16, false), 32);
   });
 
   test("big endian", () => {
@@ -84,8 +84,8 @@ describe("invalid utf16", () => {
     // 0xd7ff is valid but 0xdc00 cannot start a sequence
     const bitArray = toBitArray(utf16Bytes([0xd7ff, 0xdc00], false));
 
-    assert.equal(bitArrayUtf16Size(bitArray, 0, false), 16);
-    assert.equal(bitArrayUtf16Size(bitArray, 16, false), -1);
+    assert.equal(bitArrayUtf16SequenceSize(bitArray, 0, false), 16);
+    assert.equal(bitArrayUtf16SequenceSize(bitArray, 16, false), -1);
   });
 
   test("big endian", () => {

@@ -1,5 +1,5 @@
 import { toBitArray, stringBits, bitArraySliceToInt, sizedInt } from "./gleam.js";
-import { bitArrayUtf8Size } from "./utf.js";
+import { bitArrayUtf8SequenceSize } from "./utf.js";
 
 {
   // case <<"a":utf8>> {
@@ -8,7 +8,7 @@ import { bitArrayUtf8Size } from "./utf.js";
   // }
   let _block;
   let $ = toBitArray([stringBits("a")]);
-  let _size = bitArrayUtf8Size($, 0);
+  let _size = bitArrayUtf8SequenceSize($, 0);
   if (_size !== -1 && $.bitSize === _size) {
     _block = "✓ match!";
   } else {
@@ -23,7 +23,7 @@ import { bitArrayUtf8Size } from "./utf.js";
   // }
   let _block;
   let $ = toBitArray([stringBits("é")]);
-  let _size = bitArrayUtf8Size($, 0);
+  let _size = bitArrayUtf8SequenceSize($, 0);
 
   if (_size !== -1 && $.bitSize === _size) {
     _block = "✓ match!";
@@ -41,7 +41,7 @@ import { bitArrayUtf8Size } from "./utf.js";
   // }
   let _block;
   let $ = toBitArray([stringBits("€")]);
-  let _size = bitArrayUtf8Size($, 0);
+  let _size = bitArrayUtf8SequenceSize($, 0);
 
   if (_size !== -1 && $.bitSize === _size) {
     _block = "✓ match!";
@@ -59,7 +59,7 @@ import { bitArrayUtf8Size } from "./utf.js";
   // }
   let _block;
   let $ = toBitArray([stringBits("💜")]);
-  let _size = bitArrayUtf8Size($, 0);
+  let _size = bitArrayUtf8SequenceSize($, 0);
 
   if (_size !== -1 && $.bitSize === _size) {
     _block = "✓ match!";
@@ -77,7 +77,7 @@ import { bitArrayUtf8Size } from "./utf.js";
   // }
   let _block;
   let $ = toBitArray([stringBits("ab")]);
-  let _size = bitArrayUtf8Size($, 0);
+  let _size = bitArrayUtf8SequenceSize($, 0);
 
   if (_size !== -1 && $.bitSize === _size + 8 && $.byteAt(_size / 8) === 98) {
     _block = "✓ match!";
@@ -95,7 +95,7 @@ import { bitArrayUtf8Size } from "./utf.js";
   // }
   let _block;
   let $ = toBitArray([stringBits("ab")]);
-  let _size = bitArrayUtf8Size($, 8);
+  let _size = bitArrayUtf8SequenceSize($, 8);
 
   if ($.bitSize >= 8 && $.byteAt(0) === 97 && _size !== -1 && $.bitSize === 8 + _size) {
     _block = "✓ match!";
@@ -112,7 +112,7 @@ import { bitArrayUtf8Size } from "./utf.js";
   // }
   let _block;
   let $ = toBitArray([stringBits("abc")]);
-  let _size = bitArrayUtf8Size($, 16);
+  let _size = bitArrayUtf8SequenceSize($, 16);
 
   if ($.bitSize >= 16 && $.byteAt(0) === 97 && $.byteAt(1) === 98 && _size !== -1 && $.bitSize === 16 + _size) {
     _block = "✓ match!";
@@ -129,7 +129,7 @@ import { bitArrayUtf8Size } from "./utf.js";
   // }
   let _block;
   let $ = toBitArray([sizedInt(5, 3, true), stringBits("a")]);
-  let _size = bitArrayUtf8Size($, 3);
+  let _size = bitArrayUtf8SequenceSize($, 3);
 
   if ($.bitSize >= 3 && _size !== -1 && $.bitSize === 3 + _size) {
     _block = "✓ match!";
@@ -147,7 +147,7 @@ import { bitArrayUtf8Size } from "./utf.js";
   // }
   let _block;
   let $ = toBitArray([sizedInt(5, 3, true), stringBits("a")]);
-  let _size = bitArrayUtf8Size($, 3);
+  let _size = bitArrayUtf8SequenceSize($, 3);
 
   if ($.bitSize >= 3 && bitArraySliceToInt($, 0, 3, true, false) === 5 && _size !== -1 && $.bitSize === 3 + _size) {
     _block = "✓ match!";
@@ -165,7 +165,7 @@ import { bitArrayUtf8Size } from "./utf.js";
   // }
   let _block;
   let $ = toBitArray([sizedInt(5, 3, true), stringBits("💜")]);
-  let _size = bitArrayUtf8Size($, 3);
+  let _size = bitArrayUtf8SequenceSize($, 3);
 
   if ($.bitSize >= 3 && bitArraySliceToInt($, 0, 3, true, false) === 5 && _size !== -1 && $.bitSize === 3 + _size) {
     _block = "✓ match!";
@@ -184,12 +184,12 @@ import { bitArrayUtf8Size } from "./utf.js";
   let _block;
   let $ = toBitArray([stringBits("aé€💜")]);
 
-  let _size = bitArrayUtf8Size($, 0);
-  let _size$1 = _size === -1 ? -1 : bitArrayUtf8Size($, _size);
+  let _size = bitArrayUtf8SequenceSize($, 0);
+  let _size$1 = _size === -1 ? -1 : bitArrayUtf8SequenceSize($, _size);
 
-  let _size$2 = _size$1 === -1 ? -1 : bitArrayUtf8Size($, _size + _size$1);
+  let _size$2 = _size$1 === -1 ? -1 : bitArrayUtf8SequenceSize($, _size + _size$1);
 
-  let _size$3 = _size$2 === -1 ? -1 : bitArrayUtf8Size($, _size + _size$1 + _size$2);
+  let _size$3 = _size$2 === -1 ? -1 : bitArrayUtf8SequenceSize($, _size + _size$1 + _size$2);
 
   if (
     _size !== -1 &&

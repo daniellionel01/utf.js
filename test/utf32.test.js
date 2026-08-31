@@ -2,7 +2,7 @@ import { strict as assert } from "node:assert";
 import { describe, test } from "node:test";
 
 import { codepointToUtf32, toBitArray, UtfCodepoint } from "../src/gleam.js";
-import { bitArrayUtf32Size } from "../src/utf.js";
+import { bitArrayUtf32SequenceSize } from "../src/utf.js";
 
 /**
  * @param {number} codepoint
@@ -11,7 +11,7 @@ import { bitArrayUtf32Size } from "../src/utf.js";
 function testValid(codepoint, isBigEndian = false) {
   const bytes = codepointToUtf32(new UtfCodepoint(codepoint), isBigEndian);
 
-  assert.equal(bitArrayUtf32Size(toBitArray(bytes), 0, isBigEndian), 32);
+  assert.equal(bitArrayUtf32SequenceSize(toBitArray(bytes), 0, isBigEndian), 32);
 }
 
 /**
@@ -25,7 +25,7 @@ function testError(codepoint, isBigEndian = false) {
     bytes.reverse();
   }
 
-  assert.equal(bitArrayUtf32Size(toBitArray(bytes), 0, isBigEndian), -1);
+  assert.equal(bitArrayUtf32SequenceSize(toBitArray(bytes), 0, isBigEndian), -1);
 }
 
 // Zig has no UTF-32 functions, so the tests below test a few well known

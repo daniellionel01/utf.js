@@ -2,23 +2,23 @@ import { strict as assert } from "node:assert";
 import { describe, test } from "node:test";
 
 import { sizedInt, stringBits, toBitArray } from "../src/gleam.js";
-import { bitArrayUtf8Size } from "../src/utf.js";
+import { bitArrayUtf8SequenceSize } from "../src/utf.js";
 
 /**
  * @param {number[]} bytes
  */
 function testValid(bytes) {
-  assert.equal(bitArrayUtf8Size(toBitArray(bytes), 0), bytes.length * 8);
+  assert.equal(bitArrayUtf8SequenceSize(toBitArray(bytes), 0), bytes.length * 8);
 }
 
 /**
  * @param {number[]} bytes
  */
 function testError(bytes) {
-  assert.equal(bitArrayUtf8Size(toBitArray(bytes), 0), -1);
+  assert.equal(bitArrayUtf8SequenceSize(toBitArray(bytes), 0), -1);
 }
 
-describe("bitArrayUtf8Size", () => {
+describe("bitArrayUtf8SequenceSize", () => {
   test("1 byte UTF-8 sequence", () => {
     testValid([...stringBits("a")]);
   });
@@ -38,16 +38,16 @@ describe("bitArrayUtf8Size", () => {
   test("UTF-8 sequence at a non-byte-aligned offset", () => {
     const bitArray = toBitArray([sizedInt(5, 3, true), stringBits("é")]);
 
-    assert.equal(bitArrayUtf8Size(bitArray, 3), 16);
+    assert.equal(bitArrayUtf8SequenceSize(bitArray, 3), 16);
   });
 
   test("multiple UTF-8 sequences can be matched using cumulative offsets", () => {
     const bitArray = toBitArray([stringBits("aé€💜")]);
 
-    const first = bitArrayUtf8Size(bitArray, 0);
-    const second = bitArrayUtf8Size(bitArray, first);
-    const third = bitArrayUtf8Size(bitArray, first + second);
-    const fourth = bitArrayUtf8Size(bitArray, first + second + third);
+    const first = bitArrayUtf8SequenceSize(bitArray, 0);
+    const second = bitArrayUtf8SequenceSize(bitArray, first);
+    const third = bitArrayUtf8SequenceSize(bitArray, first + second);
+    const fourth = bitArrayUtf8SequenceSize(bitArray, first + second + third);
 
     assert.equal(first, 8);
     assert.equal(second, 16);
@@ -60,14 +60,14 @@ describe("bitArrayUtf8Size", () => {
   test("fails when start points past the end of the bit array", () => {
     const bitArray = toBitArray([stringBits("a")]);
 
-    assert.equal(bitArrayUtf8Size(bitArray, 8), -1);
+    assert.equal(bitArrayUtf8SequenceSize(bitArray, 8), -1);
   });
 
   test("only measures the sequence at the given position", () => {
     const bitArray = toBitArray([stringBits("é💜")]);
 
-    assert.equal(bitArrayUtf8Size(bitArray, 0), 16);
-    assert.equal(bitArrayUtf8Size(bitArray, 16), 32);
+    assert.equal(bitArrayUtf8SequenceSize(bitArray, 0), 16);
+    assert.equal(bitArrayUtf8SequenceSize(bitArray, 16), 32);
   });
 });
 

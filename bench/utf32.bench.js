@@ -1,7 +1,7 @@
 import { bench, do_not_optimize, run } from "mitata";
 
 import { codepointToUtf32, sizedInt, stringToUtf32, toBitArray, UtfCodepoint } from "../src/gleam.js";
-import { bitArrayUtf32Size } from "../src/utf.js";
+import { bitArrayUtf32SequenceSize } from "../src/utf.js";
 
 const ascii = toBitArray(codepointToUtf32(new UtfCodepoint(0x61), false));
 const maxCodepoint = toBitArray(codepointToUtf32(new UtfCodepoint(0x10ffff), false));
@@ -20,7 +20,7 @@ function scanUtf32(bitArray, isBigEndian) {
   let offset = 0;
 
   while (offset < bitArray.bitSize) {
-    const size = bitArrayUtf32Size(bitArray, offset, isBigEndian);
+    const size = bitArrayUtf32SequenceSize(bitArray, offset, isBigEndian);
     if (size < 0) {
       break;
     }
@@ -37,31 +37,31 @@ const asciiBits = toBitArray(stringToUtf32("abcdefghij".repeat(100), false));
 const emojiBits = toBitArray(stringToUtf32("👋💩🇺🇳".repeat(50), false));
 
 bench("ascii", () => {
-  do_not_optimize(bitArrayUtf32Size(ascii, 0, false));
+  do_not_optimize(bitArrayUtf32SequenceSize(ascii, 0, false));
 });
 
 bench("ascii big endian", () => {
-  do_not_optimize(bitArrayUtf32Size(asciiBE, 0, true));
+  do_not_optimize(bitArrayUtf32SequenceSize(asciiBE, 0, true));
 });
 
 bench("U+10FFFF", () => {
-  do_not_optimize(bitArrayUtf32Size(maxCodepoint, 0, false));
+  do_not_optimize(bitArrayUtf32SequenceSize(maxCodepoint, 0, false));
 });
 
 bench("U+10FFFF big endian", () => {
-  do_not_optimize(bitArrayUtf32Size(maxCodepointBE, 0, true));
+  do_not_optimize(bitArrayUtf32SequenceSize(maxCodepointBE, 0, true));
 });
 
 bench("unaligned", () => {
-  do_not_optimize(bitArrayUtf32Size(unaligned, 3, false));
+  do_not_optimize(bitArrayUtf32SequenceSize(unaligned, 3, false));
 });
 
 bench("invalid surrogate", () => {
-  do_not_optimize(bitArrayUtf32Size(invalidSurrogate, 0, false));
+  do_not_optimize(bitArrayUtf32SequenceSize(invalidSurrogate, 0, false));
 });
 
 bench("invalid above max", () => {
-  do_not_optimize(bitArrayUtf32Size(invalidAboveMax, 0, false));
+  do_not_optimize(bitArrayUtf32SequenceSize(invalidAboveMax, 0, false));
 });
 
 bench("scan 1000 ascii code points", () => {
