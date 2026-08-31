@@ -1,5 +1,5 @@
 import { toBitArray, stringBits, bitArraySliceToInt, sizedInt } from "./gleam.js";
-import { bitArrayUtf8SequenceSize } from "./utf8.js";
+import { bitArrayUtf8Size } from "./utf.js";
 
 /*
 All valid UTF-8 Characters:
@@ -159,19 +159,19 @@ function main() {
   let utf8Size;
 
   $ = toBitArray([stringBits("a")]);
-  utf8Size = bitArrayUtf8SequenceSize($, 0);
+  utf8Size = bitArrayUtf8Size($, 0);
   console.log("$", "a", "bitSize", $.bitSize, "utf8Size", utf8Size);
 
   $ = toBitArray([stringBits("é")]);
-  utf8Size = bitArrayUtf8SequenceSize($, 0);
+  utf8Size = bitArrayUtf8Size($, 0);
   console.log("$", "é", "bitSize", $.bitSize, "utf8Size", utf8Size);
 
   $ = toBitArray([stringBits("€")]);
-  utf8Size = bitArrayUtf8SequenceSize($, 0);
+  utf8Size = bitArrayUtf8Size($, 0);
   console.log("$", "€", "bitSize", $.bitSize, "utf8Size", utf8Size);
 
   $ = toBitArray([stringBits("💜")]);
-  utf8Size = bitArrayUtf8SequenceSize($, 0);
+  utf8Size = bitArrayUtf8Size($, 0);
   console.log("$", "💜", "bitSize", $.bitSize, "utf8Size", utf8Size);
 }
 main();
