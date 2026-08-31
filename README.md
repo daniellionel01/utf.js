@@ -1,13 +1,10 @@
 # utf.js
 
-Testing implementations of validating UTF-8, UTF-16 and UTF-32 segments in JavaScript.
+Implementations of validating UTF-8, UTF-16 and UTF-32 segments in JavaScript.
 
-This project is an effort related to [Gleam](https://gleam.run/). It is a programming language, that
-compiles to Erlang and JavaScript. Erlang natively supports pattern matching on UTF segments, however
-there is no clear native API in the JavaScript runtimes (Browser, Node, Deno, Bun).
+This project is an effort related to [Gleam](https://gleam.run/). It is a programming language, that compiles to Erlang and JavaScript. Erlang natively supports pattern matching on UTF segments, however there is no clear native API in the JavaScript runtimes (Browser, Node, Deno, Bun).
 
-If you want to learn about more advanced usage of the bit array syntax in Gleam, checkout the official
-tour: https://tour.gleam.run/data-types/bit-arrays/. And also this blog article: https://gearsco.de/blog/bit-array-syntax/
+If you want to learn about more advanced usage of the bit array syntax in Gleam, checkout the official tour: https://tour.gleam.run/data-types/bit-arrays/. And also this blog article: https://gearsco.de/blog/bit-array-syntax/
 
 In short, you can write this in Gleam:
 
@@ -36,12 +33,13 @@ pub fn main() {
 
 I have come up with 2 methodologies to validate and segment valid UTF byte sequences in JavaScript:
 
-- For UTF-8 and UTF-16 we can use `TextDecoder` with the `{ fatal: true }` option, which will throw an error,
-  if you try to decode an invalid UTF segment.
-- Handrolled byte table according to the spec: https://tools.ietf.org/html/rfc3629. This is what Erlang does
-  under the hood: https://github.com/erlang/otp/blob/15f5565172ad3c5d55370cbf2385c49d7c219a6a/erts/emulator/beam/erl_bits.c#L21299
+Handrolled byte table according to the spec: https://tools.ietf.org/html/rfc3629.
+
+This is what Erlang does under the hood: https://github.com/erlang/otp/blob/15f5565172ad3c5d55370cbf2385c49d7c219a6a/erts/emulator/beam/erl_bits.c#L21299
 
 ## Testing
+
+[Zig](https://ziglang.org/) has a nice unicode test: https://github.com/ziglang/zig/blob/master/lib/std/unicode.zig
 
 There is quite a famous UTF-8 stress test by Markus Kuhn: https://www.unicode.org/mail-arch/unicode-ml/Archives-Old/UML019/0087.html.
 

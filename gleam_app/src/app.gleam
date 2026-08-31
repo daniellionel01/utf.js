@@ -63,4 +63,9 @@ pub fn main() {
     <<_:utf8, _:utf8, _:utf8, _:utf8>> -> "this is utf8!"
     _ -> "this is not."
   }
+
+  echo case <<"a":utf16>> {
+    <<_:utf16>> -> "this is utf16!"
+    _ -> "this is not."
+  }
 }

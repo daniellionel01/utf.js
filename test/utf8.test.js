@@ -4,29 +4,39 @@ import { describe, test } from "node:test";
 import { sizedInt, stringBits, toBitArray } from "../src/gleam.js";
 import { bitArrayUtf8Size } from "../src/utf.js";
 
+/**
+ * Asserts that the byte sequence is measured at its full size in bits.
+ *
+ * @param {number[]} bytes
+ */
+function testValid(bytes) {
+  assert.equal(bitArrayUtf8Size(toBitArray(bytes), 0), bytes.length * 8);
+}
+
+/**
+ * Asserts that the byte sequence is rejected.
+ *
+ * @param {number[]} bytes
+ */
+function testError(bytes) {
+  assert.equal(bitArrayUtf8Size(toBitArray(bytes), 0), -1);
+}
+
 describe("bitArrayUtf8Size", () => {
   test("1 byte UTF-8 sequence", () => {
-    const bitArray = toBitArray([stringBits("a")]);
-
-    assert.equal(bitArrayUtf8Size(bitArray, 0), 8);
+    testValid([...stringBits("a")]);
   });
 
   test("2 byte UTF-8 sequence", () => {
-    const bitArray = toBitArray([stringBits("é")]);
-
-    assert.equal(bitArrayUtf8Size(bitArray, 0), 16);
+    testValid([...stringBits("é")]);
   });
 
   test("3 byte UTF-8 sequence", () => {
-    const bitArray = toBitArray([stringBits("€")]);
-
-    assert.equal(bitArrayUtf8Size(bitArray, 0), 24);
+    testValid([...stringBits("€")]);
   });
 
   test("4 byte UTF-8 sequence", () => {
-    const bitArray = toBitArray([stringBits("💜")]);
-
-    assert.equal(bitArrayUtf8Size(bitArray, 0), 32);
+    testValid([...stringBits("💜")]);
   });
 
   test("UTF-8 sequence at a non-byte-aligned offset", () => {
@@ -51,49 +61,6 @@ describe("bitArrayUtf8Size", () => {
     assert.equal(first + second + third + fourth, bitArray.bitSize);
   });
 
-  test("fails when there are not enough bits for the sequence", () => {
-    // C3 is the lead byte of a 2-byte UTF-8 sequence.
-    const bitArray = toBitArray([sizedInt(0xc3, 8, false)]);
-
-    assert.equal(bitArrayUtf8Size(bitArray, 0), -1);
-  });
-
-  test("fails for a continuation byte used as a lead byte", () => {
-    const bitArray = toBitArray([sizedInt(0x80, 8, false)]);
-
-    assert.equal(bitArrayUtf8Size(bitArray, 0), -1);
-  });
-
-  test("fails for an invalid continuation byte", () => {
-    const bitArray = toBitArray([sizedInt(0xc2, 8, false), sizedInt(0x20, 8, false)]);
-
-    assert.equal(bitArrayUtf8Size(bitArray, 0), -1);
-  });
-
-  test("fails for an overlong UTF-8 encoding", () => {
-    const bitArray = toBitArray([sizedInt(0xe0, 8, false), sizedInt(0x80, 8, false), sizedInt(0x80, 8, false)]);
-
-    assert.equal(bitArrayUtf8Size(bitArray, 0), -1);
-  });
-
-  test("fails for UTF-8 encoding a surrogate code point", () => {
-    // U+D800 encoded as ED A0 80.
-    const bitArray = toBitArray([sizedInt(0xed, 8, false), sizedInt(0xa0, 8, false), sizedInt(0x80, 8, false)]);
-
-    assert.equal(bitArrayUtf8Size(bitArray, 0), -1);
-  });
-
-  test("fails for a code point above U+10FFFF", () => {
-    const bitArray = toBitArray([
-      sizedInt(0xf4, 8, false),
-      sizedInt(0x90, 8, false),
-      sizedInt(0x80, 8, false),
-      sizedInt(0x80, 8, false),
-    ]);
-
-    assert.equal(bitArrayUtf8Size(bitArray, 0), -1);
-  });
-
   test("fails when start points past the end of the bit array", () => {
     const bitArray = toBitArray([stringBits("a")]);
 
@@ -105,5 +72,97 @@ describe("bitArrayUtf8Size", () => {
 
     assert.equal(bitArrayUtf8Size(bitArray, 0), 16);
     assert.equal(bitArrayUtf8Size(bitArray, 16), 32);
+  });
+});
+
+// Tests ported from
+// https://github.com/ziglang/zig/blob/master/lib/std/unicode.zig
+//
+
+describe("valid utf8", () => {
+  test("1 byte sequences", () => {
+    testValid([0x00]); // 0x0
+    testValid([0x20]); // 0x20
+    testValid([0x7f]); // 0x7f
+  });
+
+  test("2 byte sequences", () => {
+    testValid([0xc2, 0x80]); // 0x80
+    testValid([0xdf, 0xbf]); // 0x7ff
+  });
+
+  test("3 byte sequences", () => {
+    testValid([0xe0, 0xa0, 0x80]); // 0x800
+    testValid([0xe1, 0x80, 0x80]); // 0x1000
+    testValid([0xef, 0xbf, 0xbf]); // 0xffff
+  });
+
+  test("4 byte sequences", () => {
+    testValid([0xf0, 0x90, 0x80, 0x80]); // 0x10000
+    testValid([0xf1, 0x80, 0x80, 0x80]); // 0x40000
+    testValid([0xf3, 0xbf, 0xbf, 0xbf]); // 0xfffff
+    testValid([0xf4, 0x8f, 0xbf, 0xbf]); // 0x10ffff
+  });
+});
+
+describe("invalid utf8 continuation bytes", () => {
+  test("unexpected continuation", () => {
+    testError([0x80]);
+    testError([0xbf]);
+  });
+
+  test("too many leading 1's", () => {
+    testError([0xf8]);
+    testError([0xff]);
+  });
+
+  test("expected continuation for 2 byte sequences", () => {
+    testError([0xc2]);
+    testError([0xc2, 0x00]);
+    testError([0xc2, 0xc0]);
+  });
+
+  test("expected continuation for 3 byte sequences", () => {
+    testError([0xe0]);
+    testError([0xe0, 0x00]);
+    testError([0xe0, 0xc0]);
+    testError([0xe0, 0xa0]);
+    testError([0xe0, 0xa0, 0x00]);
+    testError([0xe0, 0xa0, 0xc0]);
+  });
+
+  test("expected continuation for 4 byte sequences", () => {
+    testError([0xf0]);
+    testError([0xf0, 0x00]);
+    testError([0xf0, 0xc0]);
+    testError([0xf0, 0x90, 0x00]);
+    testError([0xf0, 0x90, 0xc0]);
+    testError([0xf0, 0x90, 0x80, 0x00]);
+    testError([0xf0, 0x90, 0x80, 0xc0]);
+  });
+});
+
+describe("overlong utf8 codepoint", () => {
+  test("overlong sequences", () => {
+    testError([0xc0, 0x80]);
+    testError([0xc1, 0xbf]);
+    testError([0xe0, 0x80, 0x80]);
+    testError([0xe0, 0x9f, 0xbf]);
+    testError([0xf0, 0x80, 0x80, 0x80]);
+    testError([0xf0, 0x8f, 0xbf, 0xbf]);
+  });
+});
+
+describe("misc invalid utf8", () => {
+  test("codepoint out of bounds", () => {
+    testError([0xf4, 0x90, 0x80, 0x80]);
+    testError([0xf7, 0xbf, 0xbf, 0xbf]);
+  });
+
+  test("surrogate halves", () => {
+    testValid([0xed, 0x9f, 0xbf]); // 0xd7ff
+    testError([0xed, 0xa0, 0x80]);
+    testError([0xed, 0xbf, 0xbf]);
+    testValid([0xee, 0x80, 0x80]); // 0xe000
   });
 });
