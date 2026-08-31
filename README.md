@@ -45,7 +45,7 @@ It is also how Erlang implements its validation under the hood: https://github.c
 
 ## Testing
 
-[Zig](https://ziglang.org/) has a nice and extensive unicode test for UTF-8 and UTF-16: https://github.com/ziglang/zig/blob/master/lib/std/unicode.zig that we ported over in [utf8.test.js](./test/utf8.test.js) and [utf16.test.js](./test/utf16.test.js)
+[Zig](https://ziglang.org/) has a good unicode test suite for UTF-8 and UTF-16: https://github.com/ziglang/zig/blob/master/lib/std/unicode.zig that we ported over in [utf8.test.js](./test/utf8.test.js) and [utf16.test.js](./test/utf16.test.js)
 
 ## Performance
 
