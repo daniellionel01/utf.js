@@ -36,8 +36,9 @@ The only platform native way of validating UTF segments in JavaScript runtimes i
 There are a few issues with this:
 
 - It does not support UTF-32, so we would have to come up with our own implementation for that.
-- `TextDecoder` will not be as performant as a hand-rolled implementation.
-- Using a `try { } catch { }` block itself has some overhead in the VM.
+- `TextDecoder` will not be as performant as a hand-rolled implementation, since the `decode` function tries to produce a new string, instead of just determining the size of it.
+- The `decode` function only gives us `true` or `false`. It does not tell us the size of the codepoint.
+- Using a `try { } catch { }` block itself will have some overhead in the runtime. The happy path is overhead free, but throwing and catching an error is quite expensive.
 
 The specification and byte table that define a valid UTF-8 segment, is not too complicated: https://tools.ietf.org/html/rfc3629.
 
