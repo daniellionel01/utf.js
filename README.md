@@ -30,7 +30,7 @@ pub fn main() {
 }
 ```
 
-## Methodology
+## Method
 
 The closest platform API for validating UTF sequences in JavaScript runtimes is [TextDecoder](https://developer.mozilla.org/en-US/docs/Web/API/TextDecoder) with the `{ fatal: true }` option. When `decode()` gets invalid input, it throws an error instead of replacing the invalid data.
 
