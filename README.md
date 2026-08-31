@@ -31,11 +31,17 @@ pub fn main() {
 
 ## Methodology
 
-I have come up with 2 methodologies to validate and segment valid UTF byte sequences in JavaScript:
+The only platform native way of validating UTF segments in JavaScript runtimes is to use `TextDecoder` with the `{ fatal: true }` option. That way, when you `decode` a string, it will throw an Error.
 
-Handrolled byte table according to the spec: https://tools.ietf.org/html/rfc3629.
+There are a few issues with this:
 
-This is what Erlang does under the hood: https://github.com/erlang/otp/blob/15f5565172ad3c5d55370cbf2385c49d7c219a6a/erts/emulator/beam/erl_bits.c#L21299
+- It does not support UTF-32, so we would have to come up with our own implementation for that.
+- `TextDecoder` will not be as performant as a hand-rolled implementation.
+- Using a `try { } catch { }` block itself has some overhead in the VM.
+
+The specification and byte table that define a valid UTF-8 segment, is not too complicated: https://tools.ietf.org/html/rfc3629.
+
+It is also how Erlang implements its validation under the hood: https://github.com/erlang/otp/blob/15f5565172ad3c5d55370cbf2385c49d7c219a6a/erts/emulator/beam/erl_bits.c#L21299
 
 ## Testing
 
