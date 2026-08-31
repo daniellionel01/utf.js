@@ -1,14 +1,12 @@
 # utf.js
 
-JavaScript functions that validate UTF-8, UTF-16, and UTF-32 sequences.
+Implementations for validating UTF-8, UTF-16 and UTF-32 sequences in JavaScript.
 
-This project is related to [Gleam](https://gleam.run/). Gleam compiles to Erlang and JavaScript.
+This project is an effort related to [Gleam](https://gleam.run/). Gleam is a programming language that compiles to Erlang and JavaScript. Erlang natively supports pattern matching on UTF sequences, but there is no native API in JavaScript runtimes (Browser, Node, Deno, Bun) to do the same.
 
-Erlang supports pattern matching on UTF sequences. JavaScript runtimes such as browsers, Node.js, Deno, and Bun do not provide the same API.
+If you want to learn more about the bit array syntax in Gleam, check out the official tour: https://tour.gleam.run/data-types/bit-arrays/. There is also this blog article: https://gearsco.de/blog/bit-array-syntax/
 
-For more information about Gleam bit arrays, see the [official Gleam tour](https://tour.gleam.run/data-types/bit-arrays/) and this [article about bit array syntax](https://gearsco.de/blog/bit-array-syntax/).
-
-For example, you can write this in Gleam:
+In short, you can write this in Gleam:
 
 ```gleam
 pub fn main() {
@@ -21,9 +19,9 @@ pub fn main() {
 }
 ```
 
-`<<_:utf8>>` must match one valid UTF-8 sequence on both the Erlang and JavaScript targets.
+`<<_:utf8>>` here should match one valid UTF-8 sequence on both Erlang and any JavaScript runtime.
 
-UTF sequences can also start at positions that are not byte-aligned:
+You can also combine UTF sequences with other bit array segments:
 
 ```gleam
 pub fn main() {
@@ -32,40 +30,34 @@ pub fn main() {
 }
 ```
 
-## Method
+## Methodology
 
-JavaScript runtimes provide `TextDecoder` for text decoding. With the `{ fatal: true }` option, `decode()` throws an error when the input contains invalid data.
+The closest platform API for validating UTF sequences in JavaScript runtimes is `TextDecoder` with the `{ fatal: true }` option. When `decode()` gets invalid input, it throws an error instead of replacing the invalid data.
 
-`TextDecoder` is not a good fit for this work because:
+There are a few issues with this:
 
-- `TextDecoder` does not support UTF-32.
-- `TextDecoder` creates a JavaScript string. We only need to validate one sequence and get its size.
+- `TextDecoder` does not support UTF-32, so we would still need our own implementation for that.
+- `TextDecoder` creates a JavaScript string. We only need to validate one sequence and determine its size.
 - `decode()` does not return the size of the sequence.
-- Invalid input causes `decode()` to throw an error. Throwing and catching an error has a higher cost than a normal return value.
+- With `{ fatal: true }`, invalid input causes `decode()` to throw an error. Throwing and catching an error is more expensive than returning an error value.
 
-The rules for valid UTF-8 sequences are defined in [RFC 3629](https://www.rfc-editor.org/rfc/rfc3629).
+The rules that define valid UTF-8 sequences are specified in RFC 3629:
 
-Erlang also validates UTF sequences in its bit syntax implementation:
+https://www.rfc-editor.org/rfc/rfc3629
+
+Erlang also validates UTF sequences directly in its bit syntax implementation:
 
 https://github.com/erlang/otp/blob/15f5565172ad3c5d55370cbf2385c49d7c219a6a/erts/emulator/beam/erl_bits.c#L21299
 
-The [gleam_app](./gleam_app/) directory contains Gleam code with `case` expressions that match on `<<_:utf8>>`.
+In the [gleam_app](./gleam_app/) directory, I took the generated JavaScript from Gleam code that contains `case` statements which match on `<<_:utf8>>`. See [app.gleam](./gleam_app/src/app.gleam) for that code.
 
-See [app.gleam](./gleam_app/src/app.gleam) for the Gleam source code.
+The generated JavaScript was simplified and can be found in [before.js](./src/before.js).
 
-A simplified version of the generated JavaScript is in [before.js](./src/before.js).
+To check a bit array for valid UTF sequences, you can use `bitArrayUtf8SequenceSize`, `bitArrayUtf16SequenceSize` or `bitArrayUtf32SequenceSize` from [utf.js](./src/utf.js).
 
-The following functions return the size of one valid UTF sequence in a bit array:
+The same examples from `before.js` were changed to use those functions in [after.js](./src/after.js).
 
-- `bitArrayUtf8SequenceSize`
-- `bitArrayUtf16SequenceSize`
-- `bitArrayUtf32SequenceSize`
-
-The functions are in [utf.js](./src/utf.js).
-
-The examples in [after.js](./src/after.js) use these functions.
-
-Run the examples with:
+You can see the output by running:
 
 ```sh
 mise run before
@@ -74,16 +66,13 @@ mise run after
 
 ## Testing
 
-[Zig](https://ziglang.org/) has tests for UTF-8 and UTF-16 in its Unicode library:
+[Zig](https://ziglang.org/) has useful Unicode tests for UTF-8 and UTF-16:
 
 https://github.com/ziglang/zig/blob/master/lib/std/unicode.zig
 
-Some of these tests were ported to:
+Some of these tests were ported to [utf8.test.js](./test/utf8.test.js) and [utf16.test.js](./test/utf16.test.js).
 
-- [utf8.test.js](./test/utf8.test.js)
-- [utf16.test.js](./test/utf16.test.js)
-
-Run the tests with:
+Run the test suite with:
 
 ```sh
 mise run test
@@ -91,12 +80,12 @@ mise run test
 
 ## Performance
 
-Run the benchmarks with:
+You can run:
 
 ```sh
 mise run bench
 ```
 
-The benchmarks test UTF-8, UTF-16, and UTF-32 with valid and invalid input.
+to benchmark UTF-8, UTF-16 and UTF-32 validation with a range of valid and invalid inputs.
 
-There is no useful baseline or comparison yet. For this reason, the benchmark results do not show if these functions are faster or slower than another implementation.
+At the moment there is no useful baseline or comparison, so the benchmark numbers do not show if these functions are faster or slower than another implementation.
