@@ -16,8 +16,6 @@ const invalidSurrogate = toBitArray(codepointToUtf32(new UtfCodepoint(0xd800), f
 // for code points above U+10FFFF.
 const invalidAboveMax = toBitArray(new Uint8Array([0x00, 0x10, 0x00, 0x00])); // 0x110000
 
-// Whole-string scans: measure every code point from offset 0 using cumulative
-// offsets, the way a bit array pattern matcher would consume the input.
 function scanUtf32(bitArray, isBigEndian) {
   let offset = 0;
 
