@@ -9,7 +9,7 @@ run = "node src/main.js"
 run = "node --test"
 
 [tasks.bench]
-run = "node --expose-gc bench/utf8.bench.js"
+run = "node --expose-gc bench/utf8.bench.js && node --expose-gc bench/utf16.bench.js && node --expose-gc bench/utf32.bench.js"
 
 [tasks.gleam_app]
 dir = "gleam_app/"
