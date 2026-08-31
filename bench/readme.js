@@ -2,9 +2,6 @@ import { execSync } from "node:child_process";
 import { readFileSync, writeFileSync } from "node:fs";
 import os from "node:os";
 
-// Regenerates the benchmark results section in README.md. Each bench file is
-// run in its own process with --json, and the results are spliced in between
-// the bench-results markers.
 const benchFiles = ["utf8", "utf16", "utf32"];
 
 function formatNs(ns) {
@@ -38,30 +35,6 @@ function table(rows) {
   ].join("\n");
 }
 
-// Draws a horizontal bar per benchmark. Bar length is log-scaled within the
-// section because the benchmarks span several orders of magnitude. Partial
-// blocks use the Unicode eighth-block characters.
-function chart(rows) {
-  const barWidth = 20;
-  const nameWidth = Math.max(...rows.map((row) => row.name.length));
-  const avgs = rows.map((row) => row.avg);
-  const logMin = Math.log(Math.min(...avgs));
-  const logMax = Math.log(Math.max(...avgs));
-  const partials = ["", "▏", "▎", "▍", "▌", "▋", "▊", "▉"];
-
-  const bars = rows.map((row) => {
-    const t = logMin === logMax ? 1 : (Math.log(row.avg) - logMin) / (logMax - logMin);
-    const exact = t * barWidth;
-    const full = Math.floor(exact);
-    const partialIndex = Math.min(8, Math.round((exact - full) * 8));
-    const bar = "█".repeat(full) + (partialIndex === 8 ? "█" : partials[partialIndex]);
-
-    return row.name.padEnd(nameWidth) + "  " + bar.padEnd(barWidth) + "  " + formatNs(row.avg).padStart(9);
-  });
-
-  return ["benchmark".padEnd(nameWidth) + "  " + " ".repeat(barWidth) + "        avg", "-".repeat(nameWidth + barWidth + 13), ...bars].join("\n");
-}
-
 const readmePath = new URL("../README.md", import.meta.url);
 const readme = readFileSync(readmePath, "utf8");
 
@@ -77,14 +50,12 @@ const sections = benchFiles
   .map((name) => {
     const rows = runBench(name);
 
-    return `### ${name}\n\n${table(rows)}\n\nBar length is log-scaled relative to the fastest benchmark in the section.\n\n\`\`\`\n${chart(rows)}\n\`\`\``;
+    return `### ${name}\n\n${table(rows)}`;
   })
   .join("\n\n");
 
 const summary =
-  `Results from ${os.cpus()[0].model.trim()}, Node ${process.version}, ` +
-  `${new Date().toISOString().slice(0, 10)}. Benchmark results are machine-dependent; ` +
-  `regenerate them with \`mise bench-readme\`.`;
+  `Results from ${os.cpus()[0].model.trim()}, Node ${process.version}, ` + `${new Date().toISOString().slice(0, 10)}.`;
 
 const replacement = `${startMarker}\n\n${summary}\n\n${sections}\n\n${endMarker}`;
 
