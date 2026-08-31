@@ -60,6 +60,22 @@ mise run before
 mise run after
 ```
 
+## Codepoints
+
+There is a [Gleam Issue](https://github.com/gleam-lang/gleam/issues/3842) to track the support of `<<_:utf8_codepoint>>` (and UTF-16, UTF-32 alike) for the JavaScript target.
+
+This requires the functionality to validate one valid UTF codepoint in JavaScript. Oh wait, that's what we just implemented!
+
+We implemented `bitArrayUtf8Codepoint`, `bitArrayUtf16Codepoint`, and `bitArrayUtf32Codepoint` in [utf.js](./src/utf.js).
+
+The usage of those functions is demonstrated with what-could-be-generated JavaScript based on some Gleam examples in [codepoints.js](./src/codepoints.js).
+
+Those examples can be run with:
+
+```sh
+mise run codepoints
+```
+
 ## Testing
 
 [Zig](https://ziglang.org/) has useful Unicode tests for UTF-8 and UTF-16: https://github.com/ziglang/zig/blob/master/lib/std/unicode.zig
