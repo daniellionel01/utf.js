@@ -66,4 +66,4 @@ a U+0061: 1 byte
 
 With the [gleam_app](./gleam_app/) directory I generated the JavaScript for example `case` statements that match on `<<_:utf8>>`. Checkout [app.gleam](./gleam_app/src/app.gleam) for that code.
 
-I then took the generated JavaScript, simplified it and put it into [before.js](./src/before.js)
+I then took the generated JavaScript, simplified it and put it into [before.js](./src/before.js).
