@@ -1,12 +1,14 @@
 # utf.js
 
-Implementations of validating UTF-8, UTF-16 and UTF-32 segments in JavaScript.
+JavaScript functions that validate UTF-8, UTF-16, and UTF-32 sequences.
 
-This project is an effort related to [Gleam](https://gleam.run/). It is a programming language, that compiles to Erlang and JavaScript. Erlang natively supports pattern matching on UTF segments, however there is no native API in JavaScript (Browser, Node, Deno, Bun) to do the same.
+This project is related to [Gleam](https://gleam.run/). Gleam compiles to Erlang and JavaScript.
 
-If you want to learn about more advanced usage of the bit array syntax in Gleam, checkout the official tour: https://tour.gleam.run/data-types/bit-arrays/. And also this blog article: https://gearsco.de/blog/bit-array-syntax/
+Erlang supports pattern matching on UTF sequences. JavaScript runtimes such as browsers, Node.js, Deno, and Bun do not provide the same API.
 
-In short, you can write this in Gleam:
+For more information about Gleam bit arrays, see the [official Gleam tour](https://tour.gleam.run/data-types/bit-arrays/) and this [article about bit array syntax](https://gearsco.de/blog/bit-array-syntax/).
+
+For example, you can write this in Gleam:
 
 ```gleam
 pub fn main() {
@@ -19,49 +21,82 @@ pub fn main() {
 }
 ```
 
-`<<_:utf8>>` here should match any valid UTF-8 segment on both Erlang and any JavaScript runtime.
+`<<_:utf8>>` must match one valid UTF-8 sequence on both the Erlang and JavaScript targets.
 
-You can also match on bit arrays directly:
+UTF sequences can also start at positions that are not byte-aligned:
 
 ```gleam
 pub fn main() {
-  let assert <<a:3, _:utf8_codepoint, rest:bits>> = <<5:3, "a":utf8, 21:5>>
+  let assert <<a:3, _:utf8_codepoint, rest:bits>> =
+    <<5:3, "a":utf8, 21:5>>
 }
 ```
 
-## Methodology
+## Method
 
-The only platform native way of validating UTF segments in JavaScript runtimes is to use `TextDecoder` with the `{ fatal: true }` option. That way, when you `decode` a string, it will throw an Error.
+JavaScript runtimes provide `TextDecoder` for text decoding. With the `{ fatal: true }` option, `decode()` throws an error when the input contains invalid data.
 
-There are a few issues with this:
+`TextDecoder` is not a good fit for this work because:
 
-- It does not support UTF-32, so we would have to come up with our own implementation for that.
-- `TextDecoder` will not be as performant as a hand-rolled implementation, since the `decode` function tries to produce a new string, instead of just determining the size of it.
-- The `decode` function only gives us `true` or `false`. It does not tell us the size of the codepoint.
-- Using a `try { } catch { }` block itself will have some overhead in the runtime. The happy path is overhead free, but throwing and catching an error is quite expensive.
+- `TextDecoder` does not support UTF-32.
+- `TextDecoder` creates a JavaScript string. We only need to validate one sequence and get its size.
+- `decode()` does not return the size of the sequence.
+- Invalid input causes `decode()` to throw an error. Throwing and catching an error has a higher cost than a normal return value.
 
-The specification and byte table that define a valid UTF-8 segment, is not too complicated: https://tools.ietf.org/html/rfc3629.
+The rules for valid UTF-8 sequences are defined in [RFC 3629](https://www.rfc-editor.org/rfc/rfc3629).
 
-It is also how Erlang implements its validation under the hood: https://github.com/erlang/otp/blob/15f5565172ad3c5d55370cbf2385c49d7c219a6a/erts/emulator/beam/erl_bits.c#L21299
+Erlang also validates UTF sequences in its bit syntax implementation:
 
-In the [gleam_app](./gleam_app/) directory I took the generated JavaScript from Gleam code that contain `case` statements that match on `<<_:utf8>>`. Checkout [app.gleam](./gleam_app/src/app.gleam) for that code.
+https://github.com/erlang/otp/blob/15f5565172ad3c5d55370cbf2385c49d7c219a6a/erts/emulator/beam/erl_bits.c#L21299
 
-That JavaScript was simplified and can be found in [before.js](./src/before.js).
+The [gleam_app](./gleam_app/) directory contains Gleam code with `case` expressions that match on `<<_:utf8>>`.
 
-To check a bit array for valid UTF sequences, you can use `bitArrayUtf8SequenceSize`, `bitArrayUtf16SequenceSize` or `bitArrayUtf32SequenceSize` from [utf.js](./src/utf.js).
+See [app.gleam](./gleam_app/src/app.gleam) for the Gleam source code.
 
-The same examples from `before.js` were ported to use those functions in [after.js](./src/after.js).
+A simplified version of the generated JavaScript is in [before.js](./src/before.js).
 
-You can see the outputs by running `mise run before` and `mise run after`.
+The following functions return the size of one valid UTF sequence in a bit array:
+
+- `bitArrayUtf8SequenceSize`
+- `bitArrayUtf16SequenceSize`
+- `bitArrayUtf32SequenceSize`
+
+The functions are in [utf.js](./src/utf.js).
+
+The examples in [after.js](./src/after.js) use these functions.
+
+Run the examples with:
+
+```sh
+mise run before
+mise run after
+```
 
 ## Testing
 
-[Zig](https://ziglang.org/) has a good unicode test suite for UTF-8 and UTF-16: https://github.com/ziglang/zig/blob/master/lib/std/unicode.zig that we ported over in [utf8.test.js](./test/utf8.test.js) and [utf16.test.js](./test/utf16.test.js)
+[Zig](https://ziglang.org/) has tests for UTF-8 and UTF-16 in its Unicode library:
 
-Run the test suite with `mise run test`
+https://github.com/ziglang/zig/blob/master/lib/std/unicode.zig
+
+Some of these tests were ported to:
+
+- [utf8.test.js](./test/utf8.test.js)
+- [utf16.test.js](./test/utf16.test.js)
+
+Run the tests with:
+
+```sh
+mise run test
+```
 
 ## Performance
 
-You can run `mise run bench` to see the performance of UTF-8, UTF-16 and UTF-32 validation for a bunch of valid and invalid inputs.
+Run the benchmarks with:
 
-At the moment I don't have a good baseline or comparison, so these numbers do not mean very much without that.
+```sh
+mise run bench
+```
+
+The benchmarks test UTF-8, UTF-16, and UTF-32 with valid and invalid input.
+
+There is no useful baseline or comparison yet. For this reason, the benchmark results do not show if these functions are faster or slower than another implementation.
