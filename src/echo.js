@@ -1,22 +1,20 @@
-// Hand-simplified version of Gleam's generated `echo` (originally copied from
-// `gleam_app/build/dev/javascript/app/app.mjs`). Only the inspector branches
-// for values that actually flow through this codebase are kept: numbers,
-// strings, tuples (plain arrays), BitArrays and UtfCodepoints.
-//
-// Unlike the Gleam original there are no `file`/`line` parameters — the call
-// sites here are hand-written, so hardcoded line numbers would drift.
+// From gleam_app/build/dev/javascript/app/app.mjs
 
 import { BitArray as $BitArray, UtfCodepoint as $UtfCodepoint } from "./gleam.js";
 
-export function echo(value, message) {
+export function echo(value, message, file) {
+  const grey = "\u001b[90m";
+  const reset_color = "\u001b[39m";
   const inspector = new Inspector();
   const string_value = inspector.inspect(value);
   const string_message = message === undefined ? "" : " " + message;
+  const string_prefix = file === undefined ? "" : `${grey}${file}${reset_color}`;
 
   if (globalThis.process?.stderr?.write) {
-    globalThis.process.stderr.write(string_message + "\n" + string_value + "\n");
+    const string = `${string_prefix}${string_message}\n${string_value}\n`;
+    globalThis.process.stderr.write(string);
   } else {
-    globalThis.console.log(string_message + "\n" + string_value);
+    globalThis.console.log(`${string_prefix}${string_message}\n${string_value}`);
   }
 
   return value;

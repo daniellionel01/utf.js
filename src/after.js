@@ -15,7 +15,7 @@ import { bitArrayUtf8Codepoint, bitArrayUtf8SequenceSize } from "./utf.js";
   } else {
     _block = "no match";
   }
-  echo(_block);
+  echo(_block, undefined, "src/after.js");
 }
 {
   // case <<"é":utf8>> {
@@ -32,7 +32,7 @@ import { bitArrayUtf8Codepoint, bitArrayUtf8SequenceSize } from "./utf.js";
     _block = "no match";
   }
 
-  echo(_block);
+  echo(_block, undefined, "src/after.js");
 }
 
 {
@@ -50,7 +50,7 @@ import { bitArrayUtf8Codepoint, bitArrayUtf8SequenceSize } from "./utf.js";
     _block = "no match";
   }
 
-  echo(_block);
+  echo(_block, undefined, "src/after.js");
 }
 
 {
@@ -68,7 +68,7 @@ import { bitArrayUtf8Codepoint, bitArrayUtf8SequenceSize } from "./utf.js";
     _block = "no match";
   }
 
-  echo(_block);
+  echo(_block, undefined, "src/after.js");
 }
 
 {
@@ -86,7 +86,7 @@ import { bitArrayUtf8Codepoint, bitArrayUtf8SequenceSize } from "./utf.js";
     _block = "no match";
   }
 
-  echo(_block);
+  echo(_block, undefined, "src/after.js");
 }
 
 {
@@ -104,7 +104,7 @@ import { bitArrayUtf8Codepoint, bitArrayUtf8SequenceSize } from "./utf.js";
     _block = "no match";
   }
 
-  echo(_block);
+  echo(_block, undefined, "src/after.js");
 }
 {
   // case <<"abc":utf8>> {
@@ -121,7 +121,7 @@ import { bitArrayUtf8Codepoint, bitArrayUtf8SequenceSize } from "./utf.js";
     _block = "no match";
   }
 
-  echo(_block);
+  echo(_block, undefined, "src/after.js");
 }
 {
   // case <<5:3, "a":utf8>> {
@@ -138,7 +138,7 @@ import { bitArrayUtf8Codepoint, bitArrayUtf8SequenceSize } from "./utf.js";
     _block = "no match";
   }
 
-  echo(_block);
+  echo(_block, undefined, "src/after.js");
 }
 
 {
@@ -156,7 +156,7 @@ import { bitArrayUtf8Codepoint, bitArrayUtf8SequenceSize } from "./utf.js";
     _block = "no match";
   }
 
-  echo(_block);
+  echo(_block, undefined, "src/after.js");
 }
 
 {
@@ -174,7 +174,7 @@ import { bitArrayUtf8Codepoint, bitArrayUtf8SequenceSize } from "./utf.js";
     _block = "no match";
   }
 
-  echo(_block);
+  echo(_block, undefined, "src/after.js");
 }
 
 {
@@ -204,7 +204,7 @@ import { bitArrayUtf8Codepoint, bitArrayUtf8SequenceSize } from "./utf.js";
     _block = "no match";
   }
 
-  echo(_block);
+  echo(_block, undefined, "src/after.js");
 }
 
 {
@@ -217,9 +217,9 @@ import { bitArrayUtf8Codepoint, bitArrayUtf8SequenceSize } from "./utf.js";
   if (_size !== -1 && $.bitSize === _size) {
     let x = bitArrayUtf8Codepoint($, 0, _size);
 
-    echo(["size", _size, "codepoint", x], "utf8_codepoint", "src/after.js", 220);
+    echo(["size", _size, "codepoint", x], "utf8_codepoint", "src/after.js");
   } else {
-    echo("no match");
+    echo("no match", undefined, "src/after.js");
   }
 }
 
@@ -231,7 +231,7 @@ import { bitArrayUtf8Codepoint, bitArrayUtf8SequenceSize } from "./utf.js";
     if (_size !== -1 && $.bitSize === _size) {
       const codepoint = bitArrayUtf8Codepoint($, 0, _size);
 
-      echo([character, _size, codepoint]);
+      echo([character, _size, codepoint], undefined, "src/after.js");
     }
   }
 }

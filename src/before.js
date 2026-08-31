@@ -16,7 +16,7 @@ import { toBitArray, stringBits, bitArraySliceToInt, sizedInt } from "./gleam.js
   } else {
     _block = "no match";
   }
-  echo(_block);
+  echo(_block, undefined, "src/before.js");
 }
 
 {
@@ -31,7 +31,7 @@ import { toBitArray, stringBits, bitArraySliceToInt, sizedInt } from "./gleam.js
   } else {
     _block = "no match";
   }
-  echo(_block);
+  echo(_block, undefined, "src/before.js");
 }
 
 {
@@ -46,7 +46,7 @@ import { toBitArray, stringBits, bitArraySliceToInt, sizedInt } from "./gleam.js
   } else {
     _block = "no match";
   }
-  echo(_block);
+  echo(_block, undefined, "src/before.js");
 }
 
 {
@@ -61,7 +61,7 @@ import { toBitArray, stringBits, bitArraySliceToInt, sizedInt } from "./gleam.js
   } else {
     _block = "no match";
   }
-  echo(_block);
+  echo(_block, undefined, "src/before.js");
 }
 
 {
@@ -76,7 +76,7 @@ import { toBitArray, stringBits, bitArraySliceToInt, sizedInt } from "./gleam.js
   } else {
     _block = "no match";
   }
-  echo(_block);
+  echo(_block, undefined, "src/before.js");
 }
 
 {
@@ -91,7 +91,7 @@ import { toBitArray, stringBits, bitArraySliceToInt, sizedInt } from "./gleam.js
   } else {
     _block = "no match";
   }
-  echo(_block);
+  echo(_block, undefined, "src/before.js");
 }
 
 {
@@ -106,7 +106,7 @@ import { toBitArray, stringBits, bitArraySliceToInt, sizedInt } from "./gleam.js
   } else {
     _block = "no match";
   }
-  echo(_block);
+  echo(_block, undefined, "src/before.js");
 }
 
 {
@@ -121,7 +121,7 @@ import { toBitArray, stringBits, bitArraySliceToInt, sizedInt } from "./gleam.js
   } else {
     _block = "no match";
   }
-  echo(_block);
+  echo(_block, undefined, "src/before.js");
 }
 
 {
@@ -136,7 +136,7 @@ import { toBitArray, stringBits, bitArraySliceToInt, sizedInt } from "./gleam.js
   } else {
     _block = "no match";
   }
-  echo(_block);
+  echo(_block, undefined, "src/before.js");
 }
 
 {
@@ -151,7 +151,7 @@ import { toBitArray, stringBits, bitArraySliceToInt, sizedInt } from "./gleam.js
   } else {
     _block = "no match";
   }
-  echo(_block);
+  echo(_block, undefined, "src/before.js");
 }
 
 {
@@ -166,5 +166,5 @@ import { toBitArray, stringBits, bitArraySliceToInt, sizedInt } from "./gleam.js
   } else {
     _block = "no match";
   }
-  echo(_block);
+  echo(_block, undefined, "src/before.js");
 }
