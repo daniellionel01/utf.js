@@ -1,4 +1,7 @@
-// From gleam_app/build/dev/javascript/app/app.mjs
+// Modified `echo` function from gleam_app/build/dev/javascript/app/app.mjs
+//
+// In our version, we don't need to print the line number.
+//
 
 import { BitArray as $BitArray, UtfCodepoint as $UtfCodepoint } from "./gleam.js";
 

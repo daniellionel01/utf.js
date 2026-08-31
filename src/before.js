@@ -1,9 +1,6 @@
 import { echo } from "./echo.js";
 import { toBitArray, stringBits, bitArraySliceToInt, sizedInt } from "./gleam.js";
 
-// Every block is a simplified implementation of the JavaScript
-// that the reference Gleam code generates through the compiler.
-
 {
   // case <<"a":utf8>> {
   //   <<_:utf8>> -> "match!"

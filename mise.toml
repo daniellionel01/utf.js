@@ -8,6 +8,9 @@ run = "node src/before.js"
 [tasks.after]
 run = "node src/after.js"
 
+[tasks.codepoints]
+run = "node src/codepoints.js"
+
 [tasks.test]
 run = "node --test"
 
